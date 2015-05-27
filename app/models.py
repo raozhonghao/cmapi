@@ -39,6 +39,7 @@ class Website(db.Model, IdAndToDictMixin):
     __tablename__ = 'websites'
 
     name = db.Column(db.String(40))
+    description = db.Column(db.Text)
 
 
 class User(db.Model, IdAndToDictMixin):
@@ -81,6 +82,7 @@ class Column(db.Model, IdAndToDictMixin):
     layer = db.Column(db.Integer)
     name = db.Column(db.String(20))
     parent = db.Column(db.String(20))
+    description = db.Column(db.String(600))
     website_id = db.Column(UUID, db.ForeignKey(
         'websites.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     website = db.relationship('Website', backref=db.backref('columns'))

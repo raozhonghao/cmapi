@@ -37,6 +37,7 @@ if __name__ == '__main__':
     __api__.add_resource(websites.WebsiteApi, '/api/websites/<website_id>')
     from api import columns
     __api__.add_resource(columns.ColumnListApi, '/api/websites/<website_id>/columns')
+    __api__.add_resource(columns.ColumnApi, '/api/websites/<website_id>/columns/<column_id>')
     from api import articles
     __api__.add_resource(articles.ArticleListApi, '/api/websites/<website_id>/columns/<column_id>/articles')
     from api import users
