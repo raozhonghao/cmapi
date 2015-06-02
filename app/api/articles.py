@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import g
-from flask import request
 from flask.ext.restful import Resource
 
 from models import db
 from models import Column
 from models import Article
-from .token import auth
+from . import auth
 
 
 class ArticleListApi(Resource):

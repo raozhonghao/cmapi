@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import current_app
-from sqlalchemy.dialects.postgresql import UUID
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from itsdangerous import SignatureExpired
-from itsdangerous import BadSignature
 
 import app
 db = app.get_db()
 
 
 class IdAndToDictMixin(object):
-    id = db.Column(UUID, primary_key=True, default=db.func.uuid_generate_v4())
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     def to_dict(self):
         _d = {}
@@ -49,7 +44,7 @@ class User(db.Model, IdAndToDictMixin):
     password_hash = db.Column(db.String(128))
     nickname = db.Column(db.String(40))
     is_root = db.Column(db.Boolean, default=False)
-    website_id = db.Column(UUID, db.ForeignKey(
+    website_id = db.Column(db.Integer, db.ForeignKey(
         'websites.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     website = db.relationship('Website', backref=db.backref('users'))
 
@@ -59,22 +54,6 @@ class User(db.Model, IdAndToDictMixin):
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
 
-    def generate_auth_token(self, expiration = 1800):
-        _s = Serializer(current_app.config['SECRET_KEY'], expires_in = expiration)
-        return _s.dumps({'id': self.id})
-
-    @classmethod
-    def verify_auth_token(cls, token):
-        _s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            _data = _s.loads(token)
-        except SignatureExpired:
-            return None
-        except BadSignature:
-            return None
-        _user = User.query.get(_data['id'])
-        return _user
-
 
 class Column(db.Model, IdAndToDictMixin):
     __tablename__ = 'columns'
@@ -83,7 +62,7 @@ class Column(db.Model, IdAndToDictMixin):
     name = db.Column(db.String(20))
     parent = db.Column(db.String(20))
     description = db.Column(db.String(600))
-    website_id = db.Column(UUID, db.ForeignKey(
+    website_id = db.Column(db.Integer, db.ForeignKey(
         'websites.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     website = db.relationship('Website', backref=db.backref('columns'))
 
@@ -93,6 +72,6 @@ class Article(db.Model, IdAndToDictMixin, TimestampMixin):
 
     title = db.Column(db.String(200))
     content = db.Column(db.Text)
-    column_id = db.Column(UUID, db.ForeignKey(
+    column_id = db.Column(db.Integer, db.ForeignKey(
         'columns.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     column = db.relationship('Column', backref=db.backref('articles'))

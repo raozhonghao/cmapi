@@ -7,6 +7,7 @@ from models import db
 from models import User
 from models import Website
 
+
 class UserListApi(Resource):
 
     def get(self):
@@ -26,7 +27,8 @@ class UserListApi(Resource):
         _website = Website.query.filter_by(name=_website_name).first()
         if not _website:
             return {'status': 404, 'message': 'Website %s is not found' % (_website_name)}, 404
-        _user = User(username=_username, nickname=_nickname, website_id=_website.id)
+        _user = User(
+            username=_username, nickname=_nickname, website_id=_website.id)
         _user.hash_password(_password)
         db.session.add(_user)
         db.session.commit()
@@ -34,7 +36,9 @@ class UserListApi(Resource):
         _d.pop("password_hash")
         return _d, 201
 
+
 class UserApi(Resource):
+
     def get(self, id):
         pass
 

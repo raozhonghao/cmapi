@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from models import db
 from models import Website
-from .token import auth
+from . import auth
 
 
 class WebsiteListApi(Resource):
@@ -41,13 +41,16 @@ class WebsiteListApi(Resource):
         db.session.commit()
         return _website.to_dict(), 201
 
+
 class WebsiteApi(Resource):
+
     @auth.login_required
     def get(self, website_id):
         _user = g.user
         _website = Website.query.filter_by(id=website_id).first()
         _d = _website.to_dict()
-        _d['columns'] = {'count': len(_website.columns), 'link': '/websites/%s/columns' % (website_id)}
+        _d['columns'] = {
+            'count': len(_website.columns), 'link': '/websites/%s/columns' % (website_id)}
         if _user.is_root:
             _d['removable'] = True
         return _d, 200
@@ -75,8 +78,8 @@ class WebsiteApi(Resource):
             _website.description = _description
             db.session.commit()
         _d = _website.to_dict()
-        _d['columns'] = {'count': len(_website.columns), 'link': '/websites/%s/columns' % (website_id)}
+        _d['columns'] = {
+            'count': len(_website.columns), 'link': '/websites/%s/columns' % (website_id)}
         if _user.is_root:
             _d['removable'] = True
         return _d, 200
-

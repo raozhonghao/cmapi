@@ -5,9 +5,8 @@ from flask.ext.restful import Resource
 from sqlalchemy.exc import IntegrityError
 
 from models import db
-from models import Website
 from models import Column
-from .token import auth
+from . import auth
 
 
 class ColumnListApi(Resource):
@@ -18,7 +17,7 @@ class ColumnListApi(Resource):
         _l = []
         for _column in _columns:
             _d = _column.to_dict()
-            _d['link'] =  '/websites/%s/columns/%s' % (website_id, _column.id)
+            _d['link'] = '/websites/%s/columns/%s' % (website_id, _column.id)
             _l.append(_d)
         return _l, 200
 
@@ -37,7 +36,7 @@ class ColumnListApi(Resource):
             return {'status': 400, 'message': '请提供正确的父级栏目名称'}, 400
         if _layer > 1 and _parent:
             _p_col = Column.query.filter_by(name=_parent).first()
-            if not _p_col: 
+            if not _p_col:
                 return {'status': 400, 'message': '找不到对应的父级栏目'}, 400
         _description = _args.get('description', None)
         _column = Column(name=_name, layer=_layer, parent=_parent, description=_description, website_id=website_id)
@@ -75,4 +74,3 @@ class ColumnApi(Resource):
         _d = _column.to_dict()
         _d['articles'] = {'count': len(_column.articles), 'link': '/websites/%s/columns/%s/articles' % (website_id, _column.id)}
         return _d, 200
-

@@ -13,6 +13,8 @@ __db__ = SQLAlchemy(__app__)
 
 def get_db():
     return __db__
+
+
 def get_app():
     return __app__
 
@@ -36,13 +38,14 @@ if __name__ == '__main__':
     __api__.add_resource(websites.WebsiteListApi, '/api/websites')
     __api__.add_resource(websites.WebsiteApi, '/api/websites/<website_id>')
     from api import columns
-    __api__.add_resource(columns.ColumnListApi, '/api/websites/<website_id>/columns')
-    __api__.add_resource(columns.ColumnApi, '/api/websites/<website_id>/columns/<column_id>')
+    __api__.add_resource(
+        columns.ColumnListApi, '/api/websites/<website_id>/columns')
+    __api__.add_resource(
+        columns.ColumnApi, '/api/websites/<website_id>/columns/<column_id>')
     from api import articles
-    __api__.add_resource(articles.ArticleListApi, '/api/websites/<website_id>/columns/<column_id>/articles')
+    __api__.add_resource(
+        articles.ArticleListApi, '/api/websites/<website_id>/columns/<column_id>/articles')
     from api import users
     __api__.add_resource(users.UserListApi, '/api/users')
-    from api import token
-    __api__.add_resource(token.TokenApi, '/api/token')
 
     __app__.run()
